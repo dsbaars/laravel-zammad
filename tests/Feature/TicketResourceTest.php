@@ -62,8 +62,10 @@ it('shows a ticket', function () {
 })->group('tickets');
 
 it('shows a ticket with comments', function () {
+
     $comment = $this->createTestComment();
-    
+    Event::fake();
+
     $ticket = (new Zammad())->ticket()->showWithComments($this->testTicket->id);
 
     $this->assertInstanceOf(Ticket::class, $ticket);
@@ -77,13 +79,12 @@ it('create and delete a ticket', function () {
     $data = [
         'title' => '::title::',
         'group' => 'Inbox',
-        'customer' => 'sebastian.fix@codebar.ch',
+        'customer' => 'test@example.com',
         'article' => [
             'body' => '::body::',
             'type' => 'note',
             'internal' => false,
-        ],
-        'house' => 20,
+        ]
     ];
 
     $ticket = (new Zammad())->ticket()->create($data);
