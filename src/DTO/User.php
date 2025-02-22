@@ -8,28 +8,49 @@ class User
 {
     public static function fromJson(array $data, bool $expanded = false): self
     {
-        return new self(
-            id: $data['id'],
-            first_name: $data['firstname'],
-            last_name: $data['lastname'],
-            login: $data['login'],
-            email: $data['email'],
-            last_login_at: Carbon::parse($data['last_login']),
-            updated_at: Carbon::parse($data['updated_at']),
-            created_at: Carbon::parse($data['created_at']),
-            expanded: $expanded ? $data : null,
-        );
+        $params = [];
+        
+        if (isset($data['id'])) {
+            $params['id'] = $data['id'];
+        }
+        if (isset($data['firstname'])) {
+            $params['first_name'] = $data['firstname'];
+        }
+        if (isset($data['lastname'])) {
+            $params['last_name'] = $data['lastname'];
+        }
+        if (isset($data['login'])) {
+            $params['login'] = $data['login'];
+        }
+        if (isset($data['email'])) {
+            $params['email'] = $data['email'];
+        }
+        if (isset($data['last_login'])) {
+            $params['last_login_at'] = Carbon::parse($data['last_login']);
+        }
+        if (isset($data['updated_at'])) {
+            $params['updated_at'] = Carbon::parse($data['updated_at']);
+        }
+        if (isset($data['created_at'])) {
+            $params['created_at'] = Carbon::parse($data['created_at']);
+        }
+        
+        if ($expanded) {
+            $params['expanded'] = $data;
+        }
+
+        return new self(...$params);
     }
 
     public function __construct(
-        public int $id,
-        public string $first_name,
-        public string $last_name,
-        public string $login,
-        public string $email,
-        public Carbon $last_login_at,
-        public Carbon $updated_at,
-        public Carbon $created_at,
+        public int $id = 0,
+        public string $first_name = '',
+        public string $last_name = '',
+        public string $login = '',
+        public string $email = '',
+        public ?Carbon $last_login_at = null,
+        public ?Carbon $updated_at = null,
+        public ?Carbon $created_at = null,
         public ?array $expanded = null,
     ) {
     }
