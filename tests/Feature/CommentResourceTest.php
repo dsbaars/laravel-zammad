@@ -5,39 +5,48 @@ namespace CodebarAg\Zammad\Tests\Feature;
 use CodebarAg\Zammad\DTO\Attachment;
 use CodebarAg\Zammad\DTO\Comment;
 use CodebarAg\Zammad\Events\ZammadResponseLog;
+use CodebarAg\Zammad\Tests\Feature\Traits\WithTestData;
 use CodebarAg\Zammad\Zammad;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 
-it('does show by ticket', function () {
-    $id = 32;
+uses(WithTestData::class);
 
-    $comments = (new Zammad())->comment()->showByTicket($id);
+beforeEach(function () {
+    $this->createTestTicket();
+    $this->createTestComment();
+    Event::fake();
+});
+
+afterEach(function () {
+    $this->cleanupTestData();
+});
+
+it('does show by ticket', function () {
+    $comments = (new Zammad())->comment()->showByTicket($this->testTicket->id);
 
     $this->assertInstanceOf(Collection::class, $comments);
 
-    $comments->each(function (Comment $comment) use ($id) {
+    $comments->each(function (Comment $comment) {
         $this->assertInstanceOf(Comment::class, $comment);
-        $this->assertSame($id, $comment->ticket_id);
+        $this->assertSame($this->testTicket->id, $comment->ticket_id);
     });
 
     Event::assertDispatched(ZammadResponseLog::class, 1);
 })->group('comments');
 
 it('does show comment', function () {
-    $id = 66;
-
-    $comment = (new Zammad())->comment()->show($id);
+    $comment = (new Zammad())->comment()->show($this->testComment->id);
 
     $this->assertInstanceOf(Comment::class, $comment);
-    $this->assertSame($id, $comment->id);
+    $this->assertSame($this->testComment->id, $comment->id);
     Event::assertDispatched(ZammadResponseLog::class, 1);
 })->group('comments');
 
 it('does create comment', function () {
     $data = [
-        'ticket_id' => 32,
+        'ticket_id' => $this->testTicket->id,
         'subject' => '::subject::',
         'body' => 'huhuhuu<br>huhuhuu<br>huhuhuu<br><br>',
         'content_type' => 'text/html',
@@ -56,7 +65,7 @@ it('does create comment', function () {
     $this->assertSame('::subject::', $comment->subject);
     $this->assertSame('huhuhuu<br>huhuhuu<br>huhuhuu<br><br>', $comment->body);
     $this->assertSame('text/html', $comment->content_type);
-    $this->assertSame(32, $comment->ticket_id);
+    $this->assertSame($this->testTicket->id, $comment->ticket_id);
     $this->assertCount(1, $comment->attachments);
     tap($comment->attachments->first(), function (Attachment $attachment) {
         $this->assertSame(30, $attachment->size);
@@ -69,26 +78,20 @@ it('does create comment', function () {
 })->group('comments');
 
 it('does parse body from comment', function () {
-    $comment = (new Zammad())->comment()->show(342);
+    $comment = (new Zammad())->comment()->show($this->testComment->id);
 
     $this->assertStringContainsString(
-        'Abgeschieden wohnen sie in Buchstabhausen an der Küste des Semantik, eines großen Sprachozeans.',
+        $this->testComment->body,
         $comment->body,
     );
     $this->assertStringContainsString(
-        'Weit hinten, hinter den Wortbergen, fern der Länder Vokalien und Konsonantien leben die Blindtexte.',
-        $comment->body,
-    );
-    $this->assertStringContainsString(
-        'Abgeschieden wohnen sie in Buchstabhausen an der Küste des Semantik, eines großen Sprachozeans.',
+        $this->testComment->body,
         $comment->body_filtered,
     );
 })->group('comments');
 
 it('has a from name helper', function () {
-    $id = 66;
-
-    $comment = (new Zammad())->comment()->show($id);
+    $comment = (new Zammad())->comment()->show($this->testComment->id);
 
     $this->assertSame(
         Str::before(Str::between($comment->from, '"', '"'), '<'),
@@ -97,9 +100,7 @@ it('has a from name helper', function () {
 })->group('comments', 'helpers');
 
 it('has a from email helper', function () {
-    $id = 66;
-
-    $comment = (new Zammad())->comment()->show($id);
+    $comment = (new Zammad())->comment()->show($this->testComment->id);
 
     $this->assertSame(
         Str::between($comment->from, '<', '>'),

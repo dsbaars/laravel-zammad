@@ -9,6 +9,10 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 
+beforeEach(function () {
+    Event::fake();
+});
+
 it('show current user', function () {
     $user = (new Zammad())->user()->me();
     $this->assertInstanceOf(User::class, $user);

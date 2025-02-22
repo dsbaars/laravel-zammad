@@ -4,9 +4,21 @@ namespace CodebarAg\Zammad\Tests\Feature;
 
 use CodebarAg\Zammad\DTO\Ticket;
 use CodebarAg\Zammad\Events\ZammadResponseLog;
+use CodebarAg\Zammad\Tests\Feature\Traits\WithTestData;
 use CodebarAg\Zammad\Zammad;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Event;
+
+uses(WithTestData::class);
+
+beforeEach(function () {
+    $this->createTestTicket();
+    Event::fake();
+});
+
+afterEach(function () {
+    $this->cleanupTestData();
+});
 
 it('lists tickets', function () {
     $tickets = (new Zammad())->ticket()->list();
@@ -42,22 +54,20 @@ it('searches tickets with empty result', function () {
 })->group('tickets');
 
 it('shows a ticket', function () {
-    $id = 32;
-
-    $ticket = (new Zammad())->ticket()->show($id);
+    $ticket = (new Zammad())->ticket()->show($this->testTicket->id);
 
     $this->assertInstanceOf(Ticket::class, $ticket);
-    $this->assertSame($id, $ticket->id);
+    $this->assertSame($this->testTicket->id, $ticket->id);
     Event::assertDispatched(ZammadResponseLog::class, 1);
 })->group('tickets');
 
 it('shows a ticket with comments', function () {
-    $id = 32;
-
-    $ticket = (new Zammad())->ticket()->showWithComments($id);
+    $comment = $this->createTestComment();
+    
+    $ticket = (new Zammad())->ticket()->showWithComments($this->testTicket->id);
 
     $this->assertInstanceOf(Ticket::class, $ticket);
-    $this->assertSame($id, $ticket->id);
+    $this->assertSame($this->testTicket->id, $ticket->id);
     $this->assertInstanceOf(Collection::class, $ticket->comments);
     $this->assertTrue($ticket->comments->count() > 0);
     Event::assertDispatched(ZammadResponseLog::class, 2);
@@ -90,10 +100,8 @@ it('create and delete a ticket', function () {
 })->group('tickets');
 
 it('shows a ticket expanded', function () {
-    $id = 32;
-
-    $ticket = (new Zammad())->ticket()->show($id);
-    $ticketExpand = (new Zammad())->ticket()->expand()->show($id);
+    $ticket = (new Zammad())->ticket()->show($this->testTicket->id);
+    $ticketExpand = (new Zammad())->ticket()->expand()->show($this->testTicket->id);
 
     $this->assertInstanceOf(Ticket::class, $ticket);
     $this->assertInstanceOf(Ticket::class, $ticketExpand);

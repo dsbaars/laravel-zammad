@@ -6,6 +6,10 @@ use CodebarAg\Zammad\Zammad;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Event;
 
+beforeEach(function () {
+    Event::fake();
+});
+
 it('lists objects', function () {
     $objects = (new Zammad())->object()->list();
     $this->assertInstanceOf(Collection::class, $objects);
