@@ -85,7 +85,7 @@ it('can get a url of an attachment', function () {
         commentId: 111,
     );
 
-    expect($attachment->url())->toBe(config('zammad.url') . '/api/v1/ticket_attachment/32/111/42');
+    expect($attachment->url())->toBe(config('zammad.url').'/api/v1/ticket_attachment/32/111/42');
 })->group('attachments');
 
 it('can get the status of a ticket', function () {

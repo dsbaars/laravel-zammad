@@ -24,7 +24,7 @@ afterEach(function () {
 });
 
 it('does show by ticket', function () {
-    $comments = (new Zammad())->comment()->showByTicket($this->testTicket->id);
+    $comments = (new Zammad)->comment()->showByTicket($this->testTicket->id);
 
     $this->assertInstanceOf(Collection::class, $comments);
 
@@ -37,7 +37,7 @@ it('does show by ticket', function () {
 })->group('comments');
 
 it('does show comment', function () {
-    $comment = (new Zammad())->comment()->show($this->testComment->id);
+    $comment = (new Zammad)->comment()->show($this->testComment->id);
 
     $this->assertInstanceOf(Comment::class, $comment);
     $this->assertSame($this->testComment->id, $comment->id);
@@ -78,7 +78,7 @@ it('does create comment', function () {
 })->group('comments');
 
 it('does parse body from comment', function () {
-    $comment = (new Zammad())->comment()->show($this->testComment->id);
+    $comment = (new Zammad)->comment()->show($this->testComment->id);
 
     $this->assertStringContainsString(
         $this->testComment->body,
@@ -91,7 +91,7 @@ it('does parse body from comment', function () {
 })->group('comments');
 
 it('has a from name helper', function () {
-    $comment = (new Zammad())->comment()->show($this->testComment->id);
+    $comment = (new Zammad)->comment()->show($this->testComment->id);
 
     $this->assertSame(
         Str::before(Str::between($comment->from, '"', '"'), '<'),
@@ -100,7 +100,7 @@ it('has a from name helper', function () {
 })->group('comments', 'helpers');
 
 it('has a from email helper', function () {
-    $comment = (new Zammad())->comment()->show($this->testComment->id);
+    $comment = (new Zammad)->comment()->show($this->testComment->id);
 
     $this->assertSame(
         Str::between($comment->from, '<', '>'),

@@ -11,8 +11,11 @@ use CodebarAg\Zammad\Zammad;
 trait WithTestData
 {
     protected ?Ticket $testTicket = null;
+
     protected ?Comment $testComment = null;
+
     protected ?Attachment $testAttachment = null;
+
     protected ?User $testUser = null;
 
     protected function getOrCreateTestUser(): User
@@ -28,7 +31,8 @@ trait WithTestData
             'roles' => ['Customer'],
         ];
 
-        $this->testUser = (new Zammad())->user()->searchOrCreateByEmail($data['email'], $data);
+        $this->testUser = (new Zammad)->user()->searchOrCreateByEmail($data['email'], $data);
+
         return $this->testUser;
     }
 
@@ -42,7 +46,7 @@ trait WithTestData
         $testUser = $this->getOrCreateTestUser();
 
         $data = [
-            'title' => 'Test Ticket ' . time(),
+            'title' => 'Test Ticket '.time(),
             'group' => 'Users',  // Using 'Users' as it's a common default group
             'customer_id' => $testUser->id,
             'article' => [
@@ -52,14 +56,14 @@ trait WithTestData
             ],
         ];
 
-        $this->testTicket = (new Zammad())->ticket()->create($data);
+        $this->testTicket = (new Zammad)->ticket()->create($data);
 
         return $this->testTicket;
     }
 
     protected function createTestComment(bool $withAttachment = false): Comment
     {
-        if ($this->testComment && !$withAttachment) {
+        if ($this->testComment && ! $withAttachment) {
             return $this->testComment;
         }
 
@@ -67,7 +71,7 @@ trait WithTestData
 
         $data = [
             'ticket_id' => $ticket->id,
-            'subject' => 'Test Comment ' . time(),
+            'subject' => 'Test Comment '.time(),
             'body' => 'Test comment body',
             'content_type' => 'text/plain',
         ];
@@ -82,7 +86,7 @@ trait WithTestData
             ];
         }
 
-        $this->testComment = (new Zammad())->comment()->create($data);
+        $this->testComment = (new Zammad)->comment()->create($data);
 
         if ($withAttachment && $this->testComment->attachments->isNotEmpty()) {
             $this->testAttachment = $this->testComment->attachments->first();
@@ -94,7 +98,7 @@ trait WithTestData
     protected function cleanupTestData(): void
     {
         if ($this->testTicket) {
-            (new Zammad())->ticket()->delete($this->testTicket->id);
+            (new Zammad)->ticket()->delete($this->testTicket->id);
             $this->testTicket = null;
             $this->testComment = null;
             $this->testAttachment = null;
@@ -104,4 +108,4 @@ trait WithTestData
         // and is harmless to keep around
         $this->testUser = null;
     }
-} 
+}

@@ -9,7 +9,7 @@ class User
     public static function fromJson(array $data, bool $expanded = false): self
     {
         $params = [];
-        
+
         if (isset($data['id'])) {
             $params['id'] = $data['id'];
         }
@@ -34,7 +34,7 @@ class User
         if (isset($data['created_at'])) {
             $params['created_at'] = Carbon::parse($data['created_at']);
         }
-        
+
         if ($expanded) {
             $params['expanded'] = $data;
         }

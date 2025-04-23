@@ -20,7 +20,7 @@ afterEach(function () {
 });
 
 it('can download an attachment', function () {
-    $content = (new Zammad())->attachment()->download(
+    $content = (new Zammad)->attachment()->download(
         ticketId: $this->testTicket->id,
         commentId: $this->testComment->id,
         attachmentId: $this->testAttachment->id,

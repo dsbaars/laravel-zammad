@@ -54,7 +54,7 @@ it('searches tickets with empty result', function () {
 })->group('tickets');
 
 it('shows a ticket', function () {
-    $ticket = (new Zammad())->ticket()->show($this->testTicket->id);
+    $ticket = (new Zammad)->ticket()->show($this->testTicket->id);
 
     $this->assertInstanceOf(Ticket::class, $ticket);
     $this->assertSame($this->testTicket->id, $ticket->id);
@@ -66,7 +66,7 @@ it('shows a ticket with comments', function () {
     $comment = $this->createTestComment();
     Event::fake();
 
-    $ticket = (new Zammad())->ticket()->showWithComments($this->testTicket->id);
+    $ticket = (new Zammad)->ticket()->showWithComments($this->testTicket->id);
 
     $this->assertInstanceOf(Ticket::class, $ticket);
     $this->assertSame($this->testTicket->id, $ticket->id);
@@ -84,7 +84,7 @@ it('create and delete a ticket', function () {
             'body' => '::body::',
             'type' => 'note',
             'internal' => false,
-        ]
+        ],
     ];
 
     $ticket = (new Zammad)->ticket()->create($data);
@@ -101,8 +101,8 @@ it('create and delete a ticket', function () {
 })->group('tickets');
 
 it('shows a ticket expanded', function () {
-    $ticket = (new Zammad())->ticket()->show($this->testTicket->id);
-    $ticketExpand = (new Zammad())->ticket()->expand()->show($this->testTicket->id);
+    $ticket = (new Zammad)->ticket()->show($this->testTicket->id);
+    $ticketExpand = (new Zammad)->ticket()->expand()->show($this->testTicket->id);
 
     $this->assertInstanceOf(Ticket::class, $ticket);
     $this->assertInstanceOf(Ticket::class, $ticketExpand);
