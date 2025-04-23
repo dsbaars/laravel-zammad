@@ -35,7 +35,7 @@ it('searches a user', function () {
     Event::assertDispatched(ZammadResponseLog::class, 1);
     $user = $users->last();
 
-    $searchedUser = (new Zammad)->user()->search($user->email);
+    $searchedUser = (new Zammad())->user()->search("\"" . $user->email . "\"");
 
     $this->assertInstanceOf(User::class, $searchedUser);
     $this->assertSame($user->id, $searchedUser->id);
