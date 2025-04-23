@@ -52,8 +52,7 @@ class User
         public ?Carbon $updated_at = null,
         public ?Carbon $created_at = null,
         public ?array $expanded = null,
-    ) {
-    }
+    ) {}
 
     public static function fake(
         ?int $id = null,

@@ -59,7 +59,7 @@ it('does create comment', function () {
         ],
     ];
 
-    $comment = (new Zammad())->comment()->create($data);
+    $comment = (new Zammad)->comment()->create($data);
 
     $this->assertInstanceOf(Comment::class, $comment);
     $this->assertSame('::subject::', $comment->subject);
@@ -73,7 +73,7 @@ it('does create comment', function () {
         $this->assertSame('text/plain', $attachment->type);
     });
     Event::assertDispatched(ZammadResponseLog::class, 1);
-    (new Zammad())->comment()->delete($comment->id);
+    (new Zammad)->comment()->delete($comment->id);
     Event::assertDispatched(ZammadResponseLog::class, 2);
 })->group('comments');
 
