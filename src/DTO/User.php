@@ -15,10 +15,16 @@ class User
         }
         if (isset($data['firstname'])) {
             $params['first_name'] = $data['firstname'];
+        } else {
+            $params['first_name'] = '';
         }
+
         if (isset($data['lastname'])) {
             $params['last_name'] = $data['lastname'];
+        } else {
+            $params['last_name'] = '';
         }
+
         if (isset($data['login'])) {
             $params['login'] = $data['login'];
         }
