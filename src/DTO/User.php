@@ -10,8 +10,8 @@ class User
     {
         return new self(
             id: $data['id'],
-            first_name: $data['firstname'],
-            last_name: $data['lastname'],
+            first_name: $data['firstname'] ?? '',
+            last_name: $data['lastname'] ?? '',
             login: $data['login'],
             email: $data['email'],
             last_login_at: Carbon::parse($data['last_login']),
